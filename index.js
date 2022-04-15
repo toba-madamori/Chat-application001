@@ -10,6 +10,7 @@ const server = http.createServer(app)
 const io = socketio(server)
 const { getUser, addUser, removeUser, getUsersInRoom } = require('./users')
 const { text } = require('express')
+const { kill } = require('process')
 
 
 io.on('connection', (socket)=>{
@@ -37,7 +38,11 @@ io.on('connection', (socket)=>{
     })
 
     socket.on('disconnect', ()=>{
-        console.log('user has disconnected');
+        const user = removeUser(socket.id)
+
+        if(user){
+            io.to(user.room).emit('message', {user:'admin', text:`${user.name} has left.`})
+        }
     })
 })
 
