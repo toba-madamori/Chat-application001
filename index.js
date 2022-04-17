@@ -2,6 +2,7 @@ const express = require('express')
 const socketio = require('socket.io')
 const http = require('http')
 const router = require('./router')
+const cors = require('cors')
 
 const port = process.env.PORT || 5000
 
@@ -9,8 +10,6 @@ const app = express()
 const server = http.createServer(app)
 const io = socketio(server)
 const { getUser, addUser, removeUser, getUsersInRoom } = require('./users')
-const { text } = require('express')
-const { kill } = require('process')
 
 
 io.on('connection', (socket)=>{
@@ -51,5 +50,6 @@ io.on('connection', (socket)=>{
 })
 
 app.use(router)
+app.use(cors())
 
 server.listen(port, ()=>{ console.log(`server is listenin on port ${port}..`); })
